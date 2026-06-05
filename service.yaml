@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo-service
+spec:
+  selector:
+    name: podinfo # указываем в селекторе метку пода
+  ports:
+  - name: podinfo
+    protocol: TCP
+    port: 80 # порт, на котором будет доступен наш сервис
+    targetPort: http # порт контейнера с Traefik 

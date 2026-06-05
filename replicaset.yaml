@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: traefik
+  labels:
+    name: traefik
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      name: traefik
+  template:
+    metadata:
+      labels:
+        name: traefik
+    spec:
+      containers:
+      - image: traefik:v2.10.1
+        name: traefik
+        args:
+          - '--api.dashboard=true'
+          - '--api.insecure=true'
+          - '--accesslog=true'
+        ports:
+        - containerPort: 8080
+          name: http

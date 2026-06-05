@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: alpine-long-sleep
+spec:
+  completions: 4
+  activeDeadlineSeconds: 25
+  template:
+    metadata:
+      name: alpine-sleep
+    spec:
+      restartPolicy: Never
+      containers:
+        - image: alpine
+          name: alpine-sleep
+          command:
+            - 'sh'
+            - '-c'
+            - 'sleep 15'

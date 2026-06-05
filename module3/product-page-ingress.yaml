@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: productpage
+  annotations:
+    cert-manager.io/cluster-issuer: "http01-clusterissuer"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+    secretName: bookinfo-secret
+  rules:
+  - host: bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: productpage
+            port:
+              number: 9080

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+    - name: app-container
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args:
+        - cat /etc/app/config/config.properties; sleep 3600
+      volumeMounts:
+        - name: config-volume
+          mountPath: /etc/app/config/config.properties
+          subPath: config.properties
+  volumes:
+    - name: config-volume
+      configMap:
+        name: app-config
+        items:
+          - key: config.properties
+            path: config.properties

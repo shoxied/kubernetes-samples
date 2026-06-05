@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod # упростим работу, используя манифест под, а не Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  containers:
+  - name: frontend
+    image: alpine:3.20.3
+    command: ["sh", "-c", "sleep infinity"] # запустим alpine c бесконечным sleep
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  containers:
+  - name: backend
+    image: nginx:latest  # nginx с параметрами по умолчанию

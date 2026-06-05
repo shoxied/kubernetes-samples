@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }} # информация из команды деплоя о названии нашего приложения
+  labels:
+    app: {{ .Chart.Name }} # информация из Chart.yaml — Name
+spec:
+  replicas: {{ .Values.replicas }} # переменная replicas
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }} # информация из Chart.yaml — Name
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }} # информация из Chart.yaml — Name
+    spec:
+      containers:
+        - name: nginx
+          image: "{{ .Values.image.repository }}:{{.Values.image.tag }}" # переменные image/repository и image/tag
+          imagePullPolicy: {{ .Values.imagePullPolicy }} # переменная imagePullPolicy
+          ports:
+            - containerPort: {{.Values.service.port }} # переменная Service/Port
+          resources:
+  {{ toYaml .Values.resources | indent 10 }} # подробнее об этом синтаксисе мы поговорим в следующих уроках

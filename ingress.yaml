@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "http01-clusterissuer"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - nginx
+    secretName: domain-name-secret
+  rules:
+  - host: nginx
+    http:
+      paths:
+      - backend:
+          service:
+            name: nginx
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix

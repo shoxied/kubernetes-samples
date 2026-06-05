@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: podinfo
+  labels:
+    app: podinfo
+spec:
+  containers:
+    - name: podinfo
+      image: ghcr.io/stefanprodan/podinfo:6.6.3
+      command:
+        - ./podinfo
+        - '--port=9898'
+      ports:
+        - name: http
+          containerPort: 9898
+          protocol: TCP
+      volumeMounts:
+      - name: data
+        mountPath: /data
+  volumes:
+  - name: data
+    emptyDir: {}

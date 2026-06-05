@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nginx-cronjob
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          name: curl
+        spec:
+          restartPolicy: Never
+          containers:
+            - image: curlimages/curl:8.10.1
+              name: curl
+              command:
+                - 'sh'
+                - '-c'
+                - 'curl --head nginx:8080' 
+

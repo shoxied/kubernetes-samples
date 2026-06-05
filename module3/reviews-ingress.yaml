@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reviews
+  annotations:
+    cert-manager.io/cluster-issuer: "http01-clusterissuer"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - reviews-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+    secretName: reviews-secret
+  rules:
+  - host: reviews-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+    http:
+      paths:
+      - path: /v1(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: reviews
+            port:
+              number: 9080
+      - path: /v2(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: reviews-v2
+            port:
+              number: 9080
+      - path: /v3(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: reviews-v3
+            port:
+              number: 9080

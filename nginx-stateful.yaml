@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  clusterIP: None
+  selector:
+    app: nginx
+    
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx
+spec:
+  serviceName: nginx
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      securityContext:
+        fsGroup: 1
+      containers:
+        - name: nginx
+          image: registry.k8s.io/nginx-slim:0.21
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+          - name: html
+            mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: html
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: yc-network-hdd
+      resources:
+        requests:
+          storage: 1Gi
+
