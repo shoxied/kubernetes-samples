@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-cdn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-cdn
+  template:
+    metadata:
+      labels:
+        app: nginx-cdn
+    spec:
+      containers:
+        - name: nginx-cdn
+          image: cr.yandex/crpcqt038mmskd2ime3g/nginx_cdn:latest
+          command: [ "nginx", "-g", "daemon off;" ]
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /.done
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: shared-data
+              mountPath: /var/www/html/
+      initContainers:
+        - name: init-container
+          image: cr.yandex/crpcqt038mmskd2ime3g/nginx_cdn:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              /download.sh
+          env:
+            - name: URL
+              value: "https://code.s3.yandex.net/Kubernetes/barsik.jpg"
+          volumeMounts:
+            - name: shared-data
+              mountPath: /var/www/html/
+      volumes:
+        - name: shared-data
+          emptyDir: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-cdn-service
+spec:
+  selector:
+    app: nginx-cdn
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

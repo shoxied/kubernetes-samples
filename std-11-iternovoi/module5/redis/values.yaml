@@ -1,0 +1,32 @@
+config:
+  enabled: true
+  maxmemory: "64mb"
+  maxmemoryPolicy: "allkeys-lru"
+  save: ""
+  appendonly: "no"
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 32Mi
+
+image:
+  repository: redis
+  tag: "7.0.7"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 6379
+  targetPort: redis
+
+probes:
+  liveness:
+    initialDelaySeconds: 5
+    timeoutSeconds: 5
+  readiness:
+    initialDelaySeconds: 5
+    timeoutSeconds: 5

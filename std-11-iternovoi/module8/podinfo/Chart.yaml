@@ -1,0 +1,10 @@
+apiVersion: v2
+name: podinfo
+description: Helm chart for simple podinfo application
+version: 1.0.0
+appVersion: "6.6.3"
+dependencies:
+  - name: postgresql
+    version: ^15.3.0
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: postgresql.enabled

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test-app-deployment
+  template:
+    metadata:
+      labels:
+        app: test-app-deployment
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: topology.kubernetes.io/zone
+                    operator: In
+                    values:
+                      - ru-central1-b
+                      - ru-central1-d
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - test-app-deployment
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: "module6-homework"
+          operator: "Equal"
+          value: "zoneD"
+          effect: "NoSchedule"
+      containers:
+        - name: test-app-deployment
+          image: registry.k8s.io/hpa-example
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 400m
+              memory: 128Mi
+            requests:
+              cpu: 200m
+              memory: 64Mi

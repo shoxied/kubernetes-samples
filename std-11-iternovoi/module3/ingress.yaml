@@ -1,0 +1,115 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: productpage
+  annotations:
+    cert-manager.io/cluster-issuer: "http01-clusterissuer"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      secretName: bookinfo-secret
+  rules:
+    - host: bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: productpage
+                port:
+                  number: 9080
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reviews
+  annotations:
+    cert-manager.io/cluster-issuer: "http01-clusterissuer"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - reviews-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      secretName: reviews-secret
+  rules:
+    - host: reviews-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      http:
+        paths:
+          - path: /v1(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: reviews
+                port:
+                  number: 9080
+          - path: /v2(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: reviews-v2
+                port:
+                  number: 9080
+          - path: /v3(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: reviews-v3
+                port:
+                  number: 9080
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: details
+  annotations:
+    cert-manager.io/cluster-issuer: "http01-clusterissuer"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      secretName: bookinfo-secret
+  rules:
+    - host: bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      http:
+        paths:
+          - path: /details/1
+            pathType: Prefix
+            backend:
+              service:
+                name: details
+                port:
+                  number: 9080
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ratings
+  annotations:
+    cert-manager.io/cluster-issuer: "http01-clusterissuer"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      secretName: bookinfo-secret
+  rules:
+    - host: bookinfo-user70vkgdhn6wtk2d8.k8prac.praktikum-services.tech
+      http:
+        paths:
+          - path: /ratings/1
+            pathType: Prefix
+            backend:
+              service:
+                name: ratings
+                port:
+                  number: 9080

@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1 # группа ресурсов API, которые использует Prometheus Operator
+kind: ServiceMonitor
+metadata:
+  name: podinfo
+  labels:
+    app: podinfo
+    release: prometheus-stack
+spec:
+  endpoints: # секция с эндпоинтами, на которых доступны метрики
+    - path: /metrics # эндпоинт
+      port: http # имя порта, используемое в объекте Service
+      interval: 15s # интервал опроса эндпоинта
+  namespaceSelector: # <-- Добавьте этот блок
+    matchNames:
+      - user70vkgdhn6wtk2d8
+  selector: # по этому селектору будут выбраны сервисы, метрики которых нужно собирать
+    matchLabels:
+      app: podinfo # в качестве селектора используется метка app: podinfox]\

@@ -1,0 +1,23 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: podinfo
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: podinfo
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Object
+      object:
+        metric:
+          name: http_requests_per_minute
+        describedObject:
+          apiVersion: v1
+          kind: Service
+          name: podinfo
+        target:
+          type: AverageValue
+          averageValue: "30"

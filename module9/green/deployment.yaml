@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo-green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: podinfo
+      env: green
+  template:
+    metadata:
+      labels:
+        app: podinfo
+        env: green
+    spec:
+      containers:
+        - name: podinfo
+          image: stefanprodan/podinfo:6.7.1
+          ports:
+            - containerPort: 9898
